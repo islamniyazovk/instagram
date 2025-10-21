@@ -1,6 +1,6 @@
-from sqlalchemy import Column, Integer, String, Date, Boolean
+from sqlalchemy.orm import relationship
 
-from app.core.database import Base
+from . import Column, Integer, Base, String, func, DateTime, Boolean
 
 
 class User(Base):
@@ -12,9 +12,11 @@ class User(Base):
     email = Column(String(30), unique=True, index=True, nullable=False)
 
     name = Column(String(20), nullable=False)
-    surname = Column(String(20), nullable=False)
 
-    birth_date = Column(Date)
     hashed_password = Column(String)
 
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())
     is_active = Column(Boolean, default=True)
+
+    posts = relationship("Post", back_populates="user")

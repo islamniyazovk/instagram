@@ -17,14 +17,14 @@ def create_access_token(data: dict, expires_in_minutes: Optional[int] = 15) -> s
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
 
-def verify_token(token: str) -> dict:
+def verify_token(token: str) -> int:
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        user_id: int = payload.get("sub")
-        if user_id is None:
-            raise JWTError
+        sub = payload.get("sub")
+        if sub is None:
+            raise JWTError("Verify token error")
 
-        return payload
+        return int(sub)
 
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
